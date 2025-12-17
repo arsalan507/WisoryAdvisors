@@ -130,7 +130,7 @@ export const About: React.FC = () => {
                 transition={{ duration: 0.6 }}
               >
                 <img
-                  src="/why-wisory.png"
+                  src="/why-wisory-bg.png"
                   alt="Why Wisory Global"
                   className="w-full h-auto object-cover"
                 />

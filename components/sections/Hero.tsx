@@ -27,7 +27,7 @@ export const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url(/herowisory.png)',
+          backgroundImage: 'url(/hero-bg.png)',
         }}
       />
       {/* Dark Overlay */}

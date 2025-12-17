@@ -2,52 +2,32 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Target, Lightbulb, Rocket, Shield } from 'lucide-react';
+import { Target, Lightbulb, Rocket, LifeBuoy } from 'lucide-react';
 
 const capabilities = [
   {
+    number: '1',
     icon: Target,
     title: 'Strategic Planning',
-    description: 'We help you define the vision, scope, and roadmap for your India capability center aligned with global business objectives.',
-    features: [
-      'Market entry strategy',
-      'Location selection',
-      'Business case development',
-      'Governance framework design',
-    ],
+    description: 'We help you define the vision, scope, and roadmap for your India capability center aligned with global business objectives. Market entry strategy, Location selection, Business case development, Governance framework design.',
   },
   {
+    number: '2',
     icon: Lightbulb,
     title: 'Setup & Launch',
-    description: 'End-to-end execution support from legal entity formation to operational launch within 90 days.',
-    features: [
-      'Entity registration',
-      'Office infrastructure',
-      'Technology setup',
-      'Initial team recruitment',
-    ],
+    description: 'End-to-end execution support from legal entity formation to operational launch within 90 days. Entity registration, office infrastructure, Technology setup, Initial team recruitment.',
   },
   {
+    number: '3',
     icon: Rocket,
     title: 'Scale & Optimize',
-    description: 'Accelerate growth while maintaining quality through proven methodologies and best practices.',
-    features: [
-      'Talent pipeline development',
-      'Process optimization',
-      'Performance metrics',
-      'Culture building',
-    ],
+    description: 'Accelerate growth while maintaining quality through proven methodologies and best practices. Talent pipeline development, Process optimization, Performance metrics, Culture building.',
   },
   {
-    icon: Shield,
+    number: '4',
+    icon: LifeBuoy,
     title: 'Ongoing Support',
-    description: 'Continuous advisory and operational support to ensure sustained success and competitive advantage.',
-    features: [
-      'Strategic advisory',
-      'Compliance management',
-      'Change management',
-      'Innovation programs',
-    ],
+    description: 'Continuous advisory and operational support to ensure sustained success and competitive advantage. Strategic advisory, Compliance management, Change management, Innovation programs.',
   },
 ];
 
@@ -79,35 +59,29 @@ export const WhatWeDo: React.FC = () => {
           {capabilities.map((capability, index) => (
             <motion.div
               key={capability.title}
-              className="bg-vapor rounded-xl p-8 border border-grey/10 hover:border-primary/30 transition-colors"
+              className="group relative bg-vapor rounded-xl p-8 border border-grey/10 hover:shadow-xl transition-all duration-300 overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <motion.div
-                className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <capability.icon className="w-8 h-8 text-primary" />
-              </motion.div>
+              {/* Hover Light Effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-              <h3 className="text-2xl font-heading font-bold text-black mb-4">
-                {capability.title}
-              </h3>
+              {/* Content */}
+              <div className="relative">
+                {/* Icon */}
+                <div className="mb-6">
+                  <capability.icon className="w-12 h-12 text-primary" />
+                </div>
 
-              <p className="text-grey leading-relaxed mb-6">
-                {capability.description}
-              </p>
+                <h3 className="text-2xl font-heading font-bold text-black mb-4">
+                  {capability.title}
+                </h3>
 
-              <div className="space-y-2">
-                {capability.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mr-3 flex-shrink-0" />
-                    <p className="text-grey text-sm">{feature}</p>
-                  </div>
-                ))}
+                <p className="text-grey leading-relaxed">
+                  {capability.description}
+                </p>
               </div>
             </motion.div>
           ))}

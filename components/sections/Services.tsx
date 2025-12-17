@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Building2, Users, TrendingUp, Cpu, Shield, Rocket, ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '../common/ScrollReveal';
-import { staggerContainer, staggerItem } from '@/lib/animations';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -18,181 +17,213 @@ const services = [
     icon: Building2,
     title: 'GCC Setup & Strategy',
     description: 'End-to-end capability center establishment from site selection to operational launch, tailored to your enterprise needs.',
+    image: '/service-1.png',
   },
   {
     icon: Users,
     title: 'Talent Acquisition & Management',
     description: 'Access India\'s best tech talent with our proven recruitment processes and retention strategies.',
+    image: '/service-2.png',
   },
   {
     icon: TrendingUp,
     title: 'Operations Excellence',
     description: 'Optimize your center\'s performance with world-class operational frameworks and continuous improvement.',
+    image: '/service-3.png',
   },
   {
     icon: Cpu,
     title: 'Technology Integration',
     description: 'Seamlessly integrate cutting-edge technologies and platforms to enhance productivity and innovation.',
+    image: '/service-4.png',
   },
   {
     icon: Shield,
     title: 'Compliance & Governance',
     description: 'Navigate complex regulatory landscapes with comprehensive compliance and risk management solutions.',
+    image: '/service-5.png',
   },
   {
     icon: Rocket,
     title: 'Scaling & Optimization',
     description: 'Scale your operations efficiently while maintaining quality and driving continuous performance improvements.',
+    image: '/service-6.png',
   },
 ];
 
 export const Services: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    if (!sectionRef.current) return;
+    if (!containerRef.current || !cardRef.current) return;
 
-    const cards = gsap.utils.toArray('.sticky-service-card');
-    const header = document.querySelector('.sticky-solutions-header');
-
-    // Animate header to fade out and move up after last card
-    if (header) {
-      gsap.to(header, {
-        opacity: 0,
-        y: -50,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'bottom bottom+=500px',
+    const ctx = gsap.context(() => {
+      // Desktop: Pin the card while the container scrolls
+      if (window.innerWidth >= 1024) {
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: 'top top',
           end: 'bottom bottom',
-          scrub: true,
-        }
-      });
-    }
+          pin: cardRef.current,
+          pinSpacing: false,
+          onUpdate: (self) => {
+            // Calculate which image is currently in view
+            const progress = self.progress;
+            const index = Math.min(
+              Math.floor(progress * services.length),
+              services.length - 1
+            );
+            setActiveIndex(index);
+          },
+        });
 
-    cards.forEach((card) => {
-      const cardElement = card as HTMLElement;
+        // Fade in each image as it comes into view
+        services.forEach((_, index) => {
+          const imageElement = document.getElementById(`service-image-${index}`);
+          if (imageElement) {
+            gsap.from(imageElement, {
+              scrollTrigger: {
+                trigger: imageElement,
+                start: 'top 80%',
+                end: 'top 20%',
+                scrub: true,
+              },
+              opacity: 0.3,
+            });
+          }
+        });
+      } else {
+        // Mobile/Tablet: Stacking cards animation
+        const cards = gsap.utils.toArray('.sticky-service-card');
 
-      // Fade out each card as the next one comes in
-      gsap.to(cardElement, {
-        opacity: 0.6,
-        scrollTrigger: {
-          trigger: cardElement,
-          start: 'top 100px',
-          end: 'top 50px',
-          scrub: 0.5,
-        }
-      });
-    });
+        cards.forEach((card) => {
+          const cardElement = card as HTMLElement;
+
+          gsap.to(cardElement, {
+            opacity: 0.6,
+            scrollTrigger: {
+              trigger: cardElement,
+              start: 'top 100px',
+              end: 'top 50px',
+              scrub: 0.5,
+            }
+          });
+        });
+      }
+    }, containerRef);
 
     return () => {
+      ctx.revert();
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
   return (
-    <section id="solutions" ref={sectionRef} className="py-20 lg:py-32" style={{ backgroundColor: '#464545' }}>
-      <div className="container-custom">
-        {/* Section Header - Sticky on Desktop */}
-        <div className="sticky-solutions-header hidden lg:block sticky top-20 z-50 py-8 mb-8" style={{ backgroundColor: '#464545' }}>
-          <div className="text-center">
-            <motion.p
-              className="text-primary font-medium text-sm md:text-base tracking-wider uppercase mb-4"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-            >
-              Our Solutions
-            </motion.p>
-            <h2 className="text-4xl md:text-5xl lg:text-h2 font-heading font-bold text-white mb-6">
-              Comprehensive Capability Center Services
-            </h2>
-            <p className="text-lg text-white max-w-3xl mx-auto">
-              From strategic planning to operational excellence, we deliver integrated solutions
-              that transform your India capability center into a competitive advantage.
-            </p>
-          </div>
-        </div>
-
-        {/* Section Header - Mobile/Tablet (Not Sticky) */}
-        <ScrollReveal>
-          <div className="lg:hidden text-center mb-16">
-            <motion.p
-              className="text-primary font-medium text-sm md:text-base tracking-wider uppercase mb-4"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-            >
-              Our Solutions
-            </motion.p>
-            <h2 className="text-4xl md:text-5xl lg:text-h2 font-heading font-bold text-white mb-6">
-              Comprehensive Capability Center Services
-            </h2>
-            <p className="text-lg text-white max-w-3xl mx-auto">
-              From strategic planning to operational excellence, we deliver integrated solutions
-              that transform your India capability center into a competitive advantage.
-            </p>
-          </div>
-        </ScrollReveal>
-
-        {/* Desktop Stacking Cards */}
-        <div className="hidden lg:block">
-          {services.map((service, index) => (
-            <div
-              key={service.title}
-              className="sticky-service-card sticky mb-8"
-              style={{ top: `${280 + index * 30}px`, zIndex: index + 1 }}
-            >
-              <div className="max-w-4xl mx-auto">
-                <div className="relative">
-                  {/* Card Index Number */}
-                  <div className="absolute -left-24 top-1/2 -translate-y-1/2">
-                    <span className="text-9xl font-heading font-bold text-white/20">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    {/* Card Image */}
-                    <div className="w-full h-48 overflow-hidden">
-                      <img
-                        src="/service-card-image.png"
-                        alt={service.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {/* Card Text Content */}
-                    <div className="p-12">
-                      {/* Content */}
-                      <h3 className="text-3xl font-heading font-bold text-primary mb-4">
-                        {service.title}
-                      </h3>
-                      <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                        {service.description}
-                      </p>
-
-                      {/* Learn More Link */}
-                      <button className="flex items-center text-primary font-semibold text-lg group">
-                        <span className="mr-2">Learn More</span>
-                        <motion.div
-                          initial={{ x: 0 }}
-                          whileHover={{ x: 5 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <ArrowRight size={20} />
-                        </motion.div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+    <section id="solutions" className="relative">
+      {/* Desktop Layout */}
+      <div className="hidden lg:block relative">
+        <div
+          ref={containerRef}
+          className="relative min-h-[600vh]"
+        >
+          {/* Full-Width Background Scrolling Images */}
+          <div className="absolute inset-0">
+            {services.map((service, index) => (
+              <div
+                key={service.title}
+                id={`service-image-${index}`}
+                className="relative h-screen w-full"
+              >
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="h-full w-full object-cover"
+                />
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Mobile/Tablet Stacking Cards */}
-        <div className="lg:hidden">
+          {/* Left: Sticky Card - Overlaid on top */}
+          <div className="relative h-screen flex items-center justify-start pl-20">
+            <div ref={cardRef} className="w-full max-w-[500px]">
+              <motion.div
+                className="bg-blue-900 rounded-3xl p-14 shadow-2xl"
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                {/* Section Label */}
+                <motion.p
+                  className="text-primary font-medium text-sm tracking-wider uppercase mb-6"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                >
+                  Our Solutions
+                </motion.p>
+
+                {/* Main Heading */}
+                <h2 className="text-4xl font-heading font-bold text-white mb-6 leading-tight">
+                  Comprehensive Capability Center Services
+                </h2>
+
+                {/* Intro Text */}
+                <p className="text-white/70 text-base mb-10 leading-relaxed">
+                  From strategic planning to operational excellence, we deliver integrated solutions that transform your India capability center into a competitive advantage.
+                </p>
+
+                {/* Divider */}
+                <div className="border-t border-white/20 mb-8"></div>
+
+                {/* Counter */}
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="text-white/60 text-base">{activeIndex + 1}</span>
+                  <span className="text-white/60 text-base">—</span>
+                  <span className="text-white/60 text-base">{services.length}</span>
+                </div>
+
+                {/* Current Service Title */}
+                <h3 className="text-4xl font-heading font-bold text-white mb-6 leading-tight transition-all duration-500">
+                  {services[activeIndex].title}
+                </h3>
+
+                {/* Current Service Description */}
+                <p className="text-white/80 text-lg leading-relaxed transition-all duration-500">
+                  {services[activeIndex].description}
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile/Tablet Layout - Stacking Cards */}
+      <div className="lg:hidden py-20" style={{ backgroundColor: '#464545' }}>
+        <div className="container-custom">
+          {/* Section Header - Mobile/Tablet */}
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <motion.p
+                className="text-primary font-medium text-sm md:text-base tracking-wider uppercase mb-4"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+              >
+                Our Solutions
+              </motion.p>
+              <h2 className="text-4xl md:text-5xl lg:text-h2 font-heading font-bold text-white mb-6">
+                Comprehensive Capability Center Services
+              </h2>
+              <p className="text-lg text-white max-w-3xl mx-auto">
+                From strategic planning to operational excellence, we deliver integrated solutions
+                that transform your India capability center into a competitive advantage.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Stacking Cards */}
           {services.map((service, index) => (
             <div
               key={service.title}
@@ -213,7 +244,7 @@ export const Services: React.FC = () => {
                     {/* Card Image */}
                     <div className="w-full h-40 md:h-48 overflow-hidden">
                       <img
-                        src="/service-card-image.png"
+                        src={service.image}
                         alt={service.title}
                         className="w-full h-full object-cover"
                       />
@@ -221,7 +252,6 @@ export const Services: React.FC = () => {
 
                     {/* Card Text Content */}
                     <div className="p-6 md:p-8">
-                      {/* Content */}
                       <h3 className="text-2xl md:text-3xl font-heading font-bold text-primary mb-3">
                         {service.title}
                       </h3>
