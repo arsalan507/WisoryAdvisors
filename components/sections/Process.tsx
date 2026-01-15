@@ -257,25 +257,8 @@ export const Process: React.FC = () => {
                         className="text-grey mb-4 leading-relaxed text-base md:text-lg"
                         animate={{ opacity: 1 }}
                       >
-                        {isExpanded ? step.hoverDescription : step.description}
+                        {step.description}
                       </motion.p>
-
-                      {/* Expanded Image */}
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{
-                          height: isExpanded ? 'auto' : 0,
-                          opacity: isExpanded ? 1 : 0,
-                        }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden mb-4"
-                      >
-                        <img
-                          src={step.image}
-                          alt={step.title}
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                      </motion.div>
 
                       <span className="inline-block bg-white text-primary px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
                         {step.duration}

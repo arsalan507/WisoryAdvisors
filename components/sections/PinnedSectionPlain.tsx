@@ -74,14 +74,14 @@ export const PinnedSectionPlain: React.FC<PinnedSectionPlainProps> = ({
       slides.forEach((slide, index) => {
         if (index === 0) {
           // First slide - set initial state and update text
-          tl.call(() => setActiveIndex(0), null, 0);
+          tl.call(() => setActiveIndex(0), undefined, 0);
         } else {
           // Calculate when this slide should appear
           // Spread animations evenly across timeline
           const slidePosition = index / slides.length;
 
           // Add text update callback EXACTLY when image starts sliding
-          tl.call(() => setActiveIndex(index), null, slidePosition);
+          tl.call(() => setActiveIndex(index), undefined, slidePosition);
 
           // Animate the image sliding up from bottom (100%) to top (0%)
           tl.to(
